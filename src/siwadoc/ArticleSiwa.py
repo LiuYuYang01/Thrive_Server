@@ -14,7 +14,7 @@ class ArticleBody(BaseModel):
     title: str = Field(default="大前端新趋势", description="文章标题")
     description: str = Field(default="文章摘要", description="文章摘要")
     content: str = Field(default="文章内容", description="文章内容")
-    cover: str = Field(default="文章封面", description="文章封面")
+    cover: str = Field(default="http://127.0.0.1:5000/1.jpg", description="文章封面")
     view: int = Field(default=10, description="文章浏览量")
     comment: int = Field(default=10, description="文章评论数量")
     cate: str = Field(default="大前端", description="文章分类")

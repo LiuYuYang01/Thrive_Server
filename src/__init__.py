@@ -4,6 +4,7 @@ from flask_siwadoc import SiwaDoc
 app = Flask(__name__, static_url_path="/")
 siwa = SiwaDoc(app, title="Flask Siwadoc", description="一个自动生成openapi文档的库", version="2.0")
 
+
 def CreateApp(env):
     from src.model import CreateSQLAlchemy
     db = CreateSQLAlchemy(app, env)

@@ -3,6 +3,7 @@ from src.utils.response import Result
 from .ProjectRouter import project
 from .ArticleRouter import article
 from .TagRouter import tag
+from .SwiperRouter import swiper
 
 from src import app
 
@@ -16,6 +17,7 @@ urlPrefix = app.config["URL_PREFIX"]
 app.register_blueprint(project, url_prefix=urlPrefix)
 app.register_blueprint(article, url_prefix=urlPrefix)
 app.register_blueprint(tag, url_prefix=urlPrefix)
+app.register_blueprint(swiper, url_prefix=urlPrefix)
 
 # 捕获全局HTTP请求异常
 @app.errorhandler(Exception)
