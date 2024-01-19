@@ -32,7 +32,7 @@ def add():
 def drop(id):
     data = ArticleModel.query.filter_by(id=id).first()
 
-    if data is None:
+    if not data:
         return Result(400, "删除失败：没有此文章")
 
     db.session.delete(data)
@@ -50,7 +50,7 @@ def dropBatch():
     for id in ids:
         data = ArticleModel.query.filter_by(id=id).first()
 
-        if data is None:
+        if not data:
             return Result(400, f"批量删除失败：没有ID：{id}的文章")
 
         db.session.delete(data)
@@ -66,12 +66,11 @@ def dropBatch():
 def edit():
     article = request.json
 
-    data = ArticleModel.query.filter_by(id=article["id"]).first()
+    data = ArticleModel.query.filter_by(id=article["id"]).update(article)
 
-    if data is None:
+    if not data:
         return Result(400, "编辑失败：没有此文章")
 
-    data.update(article)
     db.session.commit()
 
     return Result(200, "编辑成功")
@@ -83,7 +82,7 @@ def edit():
 def get(id):
     data = ArticleModel.query.filter_by(id=id).first()
 
-    if data is None:
+    if not data:
         return Result(400, "获取失败：没有此文章")
 
     return Result(200, "获取文章详情成功", data.to())
