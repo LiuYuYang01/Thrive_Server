@@ -4,15 +4,20 @@ from datetime import datetime, date
 
 from flask import Blueprint, request
 
-# 创建蓝图
-system = Blueprint("system", __name__)
-
-# 导入工具方法
+from src.model import db
 from src.utils.response import Result
 
+from src import siwa
+
+# 创建蓝图
+project = Blueprint("project", __name__)
+
+
+# from src.siwadoc.UserSiwa import UserBody, UserQuery, UserBodyId
 
 # 获取系统配置信息
-@system.route("/system/parame", methods=["GET"])
+@project.route("/project/system", methods=["GET"])
+@siwa.doc(tags=["全局配置"], summary="获取系统配置信息", description="获取系统配置信息")
 def System():
     # 获取CPU信息
     cpu = psutil.cpu_percent(interval=1, percpu=True)
@@ -36,7 +41,7 @@ def System():
     boot_time = psutil.boot_time()
     boot_time_datetime = datetime.fromtimestamp(boot_time)
 
-    # 获取系统已不间断运行天数
+    # 获取系统不间断运行天数
     date1 = date(boot_time_datetime.year, boot_time_datetime.month, boot_time_datetime.day)  # 系统开机时间
     date2 = date(datetime.now().year, datetime.now().month, datetime.now().day)
     # 计算日期差
@@ -57,7 +62,7 @@ def System():
         "memory": {"memoryTotal": memoryTotal, "memoryAvailable": memoryAvailable, "memoryPercent": memoryPercent,
                    "memoryUsed": memoryUsed},
         "boot_time_datetime": boot_time_datetime,
-        "name": name + version,
+        "name": name,
         "run": days,
         "ip": ip
     }
