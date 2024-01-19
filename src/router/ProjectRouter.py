@@ -74,24 +74,6 @@ def getSystem():
 @project.route('/project/web', methods=['GET'])
 @siwa.doc(tags=["全局配置"], summary="获取网站配置", description="获取网站配置：标题、描述、LOGO、关键词等等")
 def getSite():
-    # # 读取文件
-    # with open("src/model/ProjectModel.py", "r", encoding="utf8") as f:
-    #     # 创建一个空的命名空间，使得类的定义在这个命名空间中
-    #     namespace = {}
-    #     # 执行字符串代码，在命名空间中定义类
-    #     exec(f.read(), namespace)
-    #
-    #     # 从命名空间中获取类
-    #     ProjectModel = namespace['ProjectModel']
-    #
-    #     data = {
-    #         'title': ProjectModel.title,
-    #         'subhead': ProjectModel.subhead,
-    #         'logo': ProjectModel.logo,
-    #         'description': ProjectModel.description,
-    #         'keyword': ProjectModel.keyword
-    #     }
-
     p = ProjectModel()
 
     data = {
@@ -110,14 +92,14 @@ def getSite():
 @siwa.doc(tags=["全局配置"], summary="修改网站配置", description="修改网站配置：标题、描述、LOGO、关键词等等",
           body=ProjectBody)
 def editSite():
-    json = request.json
+    web = request.json
 
     data = f"""class ProjectModel(object):
-        title = "{json['title']}"  # 网站标题
-        subhead = "{json['subhead']}"  # 网站副标题
-        logo = "{json['logo']}"  # 网站图标
-        description = "{json['description']}"  # 网站描述
-        keyword = {json['keyword']}  # 网站SEO关键词
+        title = "{web['title']}"  # 网站标题
+        subhead = "{web['subhead']}"  # 网站副标题
+        logo = "{web['logo']}"  # 网站图标
+        description = "{web['description']}"  # 网站描述
+        keyword = {web['keyword']}  # 网站SEO关键词
     """
 
     with open("src/model/ProjectModel.py", "w", encoding="utf8") as f:
