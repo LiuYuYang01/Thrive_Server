@@ -3,12 +3,12 @@ from src.config import BaseConfig
 
 # 开发环境
 class DevelopConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:123123@127.0.0.1:3306/student_py'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:123123@127.0.0.1:3306/thrive_d'
 
 
 # 生产环境
 class ProduceConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:123123@127.0.0.1:3306/student'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:123123@127.0.0.1:3306/thrive_d'
 
 
 # 选择环境
