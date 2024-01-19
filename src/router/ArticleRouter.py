@@ -16,7 +16,6 @@ article = Blueprint("article", __name__)
           body=ArticleBody)
 def add():
     article = request.json
-    print(article)
 
     data = ArticleModel(**article)
 

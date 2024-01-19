@@ -16,7 +16,6 @@ link = Blueprint("link", __name__)
           body=LinkBody)
 def add():
     link = request.json
-    print(link)
 
     data = LinkModel(**link)
 

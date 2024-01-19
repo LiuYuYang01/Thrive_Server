@@ -16,7 +16,6 @@ swiper = Blueprint("swiper", __name__)
           body=SwiperBody)
 def add():
     swiper = request.json
-    print(swiper)
 
     data = SwiperModel(**swiper)
 

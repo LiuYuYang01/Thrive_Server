@@ -78,10 +78,10 @@ def edit():
 # 审核评论
 @comment.route("/comment/audit/<int:id>", methods=["PATCH"])
 def audit(id):
-    data = CommentModel.query.filter(CommentModel.id == id).update({'audit': 1})
+    data = CommentModel.query.filter_by(id=id).update({'audit': 1})
 
     if not data:
-        return Result(400, "编辑失败：没有此评论")
+        return Result(400, "审核失败：没有此评论")
 
     db.session.commit()
 
