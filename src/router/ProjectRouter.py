@@ -4,7 +4,7 @@ from datetime import datetime, date
 
 from flask import Blueprint, request
 
-from src.model import db
+from src.model.ProjectModel import ProjectModel
 from src.utils.response import Result
 
 from src import siwa
@@ -12,13 +12,13 @@ from src import siwa
 # 创建蓝图
 project = Blueprint("project", __name__)
 
+from src.siwadoc.ProjectSiwa import ProjectBody
 
-# from src.siwadoc.UserSiwa import UserBody, UserQuery, UserBodyId
 
-# 获取系统配置信息
+# 获取系统配置
 @project.route("/project/system", methods=["GET"])
-@siwa.doc(tags=["全局配置"], summary="获取系统配置信息", description="获取系统配置信息")
-def System():
+@siwa.doc(tags=["全局配置"], summary="获取系统配置", description="获取系统配置：CPU、磁盘、IP、系统等等")
+def getSystem():
     # 获取CPU信息
     cpu = psutil.cpu_percent(interval=1, percpu=True)
     cpu = round(sum(cpu) / len(cpu), 2)
@@ -67,9 +67,60 @@ def System():
         "ip": ip
     }
 
-    return Result(200, "获取系统配置信息成功", data)
+    return Result(200, "获取系统配置成功", data)
 
-# # 获取网站配置
-# @system.route('/system/web', methods=['GET'])
-# def Site():
-#     return Result(200, "获取网站配置信息成功")
+
+# 获取网站配置
+@project.route('/project/web', methods=['GET'])
+@siwa.doc(tags=["全局配置"], summary="获取网站配置", description="获取网站配置：标题、描述、LOGO、关键词等等")
+def getSite():
+    # # 读取文件
+    # with open("src/model/ProjectModel.py", "r", encoding="utf8") as f:
+    #     # 创建一个空的命名空间，使得类的定义在这个命名空间中
+    #     namespace = {}
+    #     # 执行字符串代码，在命名空间中定义类
+    #     exec(f.read(), namespace)
+    #
+    #     # 从命名空间中获取类
+    #     ProjectModel = namespace['ProjectModel']
+    #
+    #     data = {
+    #         'title': ProjectModel.title,
+    #         'subhead': ProjectModel.subhead,
+    #         'logo': ProjectModel.logo,
+    #         'description': ProjectModel.description,
+    #         'keyword': ProjectModel.keyword
+    #     }
+
+    p = ProjectModel()
+
+    data = {
+        'title': p.title,
+        'subhead': p.subhead,
+        'logo': p.logo,
+        'description': p.description,
+        'keyword': p.keyword
+    }
+
+    return Result(200, "获取网站配置成功", data)
+
+
+# 修改网站配置
+@project.route('/project/web', methods=['PATCH'])
+@siwa.doc(tags=["全局配置"], summary="修改网站配置", description="修改网站配置：标题、描述、LOGO、关键词等等",
+          body=ProjectBody)
+def editSite():
+    json = request.json
+
+    data = f"""class ProjectModel(object):
+        title = "{json['title']}"  # 网站标题
+        subhead = "{json['subhead']}"  # 网站副标题
+        logo = "{json['logo']}"  # 网站图标
+        description = "{json['description']}"  # 网站描述
+        keyword = {json['keyword']}  # 网站SEO关键词
+    """
+
+    with open("src/model/ProjectModel.py", "w", encoding="utf8") as f:
+        f.write(data)
+
+    return Result(200, "修改网站配置成功")
