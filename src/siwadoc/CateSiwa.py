@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConstrainedList, Field
-from typing import Optional
+from typing import Optional, Any
 
 
 class CateQuery(BaseModel):
@@ -13,7 +13,8 @@ class CateBody(BaseModel):
     icon: str = Field(default="🎉", description="分类图标")
     url: str = Field(default="http://127.0.0.1:5000", description="分类跳转链接")
     mark: str = Field(default="dqd", description="分类标识，通常为名称的英文首字母缩写")
-    level: str = Field(default="one", description="分类级别 一级：one | 二级：two")
+    level: int = Field(default=0, description="分类级别 一级：0 | 二级：一级分类的ID")
+    # children: ConstrainedList[Any] = Field(default=[], description="该分类下的所有子分类")
 
 
 class CateBodyId(BaseModel):

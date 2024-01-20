@@ -66,7 +66,7 @@ def edit():
     cate = request.json
 
     data = CateModel.query.filter_by(id=cate["id"]).update(cate)
-
+    print(data)
     if not data:
         return Result(400, "编辑失败：没有此分类")
 
@@ -79,12 +79,24 @@ def edit():
 @cate.route("/cate/<int:id>")
 @siwa.doc(tags=["分类管理"], summary="获取分类详情", resp=CateBody)
 def get(id):
-    data = CateModel.query.filter_by(id=id).first()
+    data = CateModel.query.filter_by(id=id).first().to()
+    data['children'] = []
 
     if not data:
         return Result(400, "获取失败：没有此分类")
 
-    return Result(200, "获取分类详情成功", data.to())
+    list = [k.to() for k in CateModel.query.all()]
+
+    # 查询该分类下的所有子分类
+    for cate in list:
+        if cate['level'] == id:
+            data['children'].append(cate)
+
+    # 如果为空, 就不让他显示children
+    if len(data['children']) == 0:
+        del data['children']
+
+    return Result(200, "获取分类详情成功", data)
 
 
 # 获取分类列表
@@ -96,11 +108,26 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的分类在最前面排序
-    paginate = CateModel.query.order_by(CateModel.crearetime.desc()).paginate(page=page, per_page=size,
-                                                                                    error_out=False)
+    paginate = CateModel.query.filter_by(level=0).paginate(page=page, per_page=size, error_out=False)
+    list = CateModel.query.all()
+
+    def tree(pid, data):
+        children = []
+
+        for cate in data:
+            if cate['level'] == pid:
+                cate['children'] = tree(cate['id'], data)
+
+                # 如果为空, 就不让他显示children
+                if len(cate['children']) == 0:
+                    del cate['children']
+
+                children.append(cate)
+
+        return children
 
     data = {
-        "result": [k.to() for k in paginate],
+        "result": tree(0, [k.to() for k in list]),
         "page": paginate.page,
         "size": paginate.per_page,
         "pages": paginate.pages,
