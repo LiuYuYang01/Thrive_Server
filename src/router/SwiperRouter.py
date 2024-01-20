@@ -96,7 +96,7 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的轮播图在最前面排序
-    paginate = SwiperModel.query.order_by(SwiperModel.crearetime.desc()).paginate(page=page, per_page=size,
+    paginate = SwiperModel.query.paginate(page=page, per_page=size,
                                                                                   error_out=False)
 
     data = {

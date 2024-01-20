@@ -15,7 +15,6 @@ class SwiperBody(BaseModel):
     description: str = Field(default="轮播图摘要", description="轮播图摘要")
     image: str = Field(default="http://127.0.0.1:5000/1.jpg", description="轮播图")
     url: str = Field(default="http://127.0.0.1:5000", description="轮播图跳转地址")
-    crearetime: datetime = Field(default=datetime.now(), description="轮播图创建时间")
 
 
 class SwiperBodyId(BaseModel):
