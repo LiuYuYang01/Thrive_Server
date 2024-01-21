@@ -96,7 +96,7 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的文章在最前面排序
-    paginate = ArticleModel.query.order_by(ArticleModel.crearetime.desc()).paginate(page=page, per_page=size,
+    paginate = ArticleModel.query.order_by(ArticleModel.createtime.desc()).paginate(page=page, per_page=size,
                                                                                     error_out=False)
 
     data = {

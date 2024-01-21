@@ -17,7 +17,7 @@ class LinkBody(BaseModel):
     image: str = Field(default="http://127.0.0.1:5000/1.jpg", description="网站图标")
     url: str = Field(default="http://127.0.0.1:5000", description="网站跳转地址")
     type: str = Field(default="生活类", description="网站类型")
-    crearetime: datetime = Field(default=datetime.now(), description="网站加入时间")
+    createtime: datetime = Field(default=datetime.now(), description="网站加入时间")
 
 
 class LinkBodyId(BaseModel):

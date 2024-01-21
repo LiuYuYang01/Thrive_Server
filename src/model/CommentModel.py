@@ -16,4 +16,4 @@ class CommentModel(BaseModel):
     aid = db.Column(db.Integer)  # 该评论所在的文章id
     rid = db.Column(db.Integer)  # 所有回复这条评论的id
     audit = db.Column(db.Integer)  # 评论是否审核成功
-    crearetime = db.Column("creare_time", db.DateTime, default=datetime.utcnow)  # 创建时间
+    createtime = db.Column("create_time", db.DateTime, default=datetime.utcnow)  # 创建时间

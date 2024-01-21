@@ -14,4 +14,4 @@ class LinkModel(BaseModel):
     image = db.Column(db.String(255))  # 图片
     url = db.Column(db.String(500))  # 跳转地址
     type = db.Column(db.String(100))  # 跳转地址
-    crearetime = db.Column("creare_time", db.DateTime, default=datetime.utcnow)  # 创建时间
+    createtime = db.Column("create_time", db.DateTime, default=datetime.utcnow)  # 创建时间

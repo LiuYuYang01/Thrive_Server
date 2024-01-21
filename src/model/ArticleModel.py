@@ -16,4 +16,4 @@ class ArticleModel(BaseModel):
     comment = db.Column(db.Integer, default=0)  # 评论数量
     cate = db.Column(db.String(255))  # 文章分类
     tag = db.Column(db.String(100))  # 文章标签
-    crearetime = db.Column("creare_time", db.DateTime, default=datetime.utcnow)  # 创建时间
+    createtime = db.Column("create_time", db.DateTime, default=datetime.utcnow)  # 创建时间

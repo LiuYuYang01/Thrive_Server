@@ -19,7 +19,7 @@ class ArticleBody(BaseModel):
     comment: int = Field(default=10, description="文章评论数量")
     cate: str = Field(default="大前端", description="文章分类")
     tag: str = Field(default="大前端,Python,java", description="文章标签")
-    crearetime: datetime = Field(default=datetime.now(), description="文章创建时间")
+    createtime: datetime = Field(default=datetime.now(), description="文章创建时间")
 
 
 class ArticleBodyId(BaseModel):

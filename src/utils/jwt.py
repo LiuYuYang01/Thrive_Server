@@ -4,11 +4,13 @@ from src.utils.response import Result
 from functools import wraps
 import jwt
 
-# from app.config import SecretKey
 from src import app
 
-# 从配置中加载秘钥
-SecretKey = app.config["SECRET_KEY"]
+# 加载配置信息
+expire = app.config["EXPIRE"]
+secretkey = app.config["SECRET_KEY"]
+algorithm = app.config["ALGORITHM"]
+
 
 # 定义装饰器函数，用于验证 token 的有效性
 class ExpiredSignatureError:
@@ -31,7 +33,7 @@ def TokenRequired(f):
         # 如果找到 token，验证其有效性
         if token:
             try:
-                payload = jwt.decode(token, SecretKey, algorithms=['HS256'])
+                payload = jwt.decode(token, secretkey, algorithm)
                 # 验证成功，可以继续处理请求
                 return f(*args, **kwargs)
             except jwt.ExpiredSignatureError:

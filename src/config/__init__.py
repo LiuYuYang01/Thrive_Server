@@ -20,8 +20,12 @@ class SQLAlchemyConfig(object):
 
 # Jwt配置
 class JwtConfig(object):
-    # 秘钥
-    SECRET_KEY = 'liuyuyang1024'
+    # Token过期时间 (单位：天)
+    EXPIRE = 10
+    # 自定义秘钥
+    SECRET_KEY = "LiuYuYang1024"
+    # 加密方式
+    ALGORITHM = ["HS256"]
 
 
 # 配置基类

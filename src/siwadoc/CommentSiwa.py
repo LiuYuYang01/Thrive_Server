@@ -19,7 +19,7 @@ class CommentBody(BaseModel):
     aid: int = Field(default=1, description="该评论所属的文章ID")
     rid: int = Field(default=1, description="记录所有回复该评论的ID")
     audit: int = Field(default=1, description="该评论是否审核 审核成功：1 | 待审核：0")
-    crearetime: datetime = Field(default=datetime.now(), description="发布评论的时间")
+    createtime: datetime = Field(default=datetime.now(), description="发布评论的时间")
 
 
 class CommentBodyId(BaseModel):

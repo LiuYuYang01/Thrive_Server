@@ -96,7 +96,7 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的网站在最前面排序
-    paginate = LinkModel.query.order_by(LinkModel.crearetime.desc()).paginate(page=page, per_page=size, error_out=False)
+    paginate = LinkModel.query.order_by(LinkModel.createtime.desc()).paginate(page=page, per_page=size, error_out=False)
 
     data = {
         "result": [k.to() for k in paginate],

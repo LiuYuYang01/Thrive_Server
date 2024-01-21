@@ -14,6 +14,7 @@ cate = Blueprint("cate", __name__)
 @cate.route("/cate", methods=["POST"])
 @siwa.doc(tags=["分类管理"], summary="新增分类", description="新增分类记得把id去掉，否则可能会导致重复id异常",
           body=CateBody)
+@TokenRequired
 def add():
     cate = request.json
 
@@ -28,6 +29,7 @@ def add():
 # 删除分类
 @cate.route("/cate/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["分类管理"], summary="删除分类", description="通过ID删除指定分类")
+@TokenRequired
 def drop(id):
     data = CateModel.query.filter_by(id=id).first()
 
@@ -43,6 +45,7 @@ def drop(id):
 # 批量删除
 @cate.route("/cate", methods=["DELETE"])
 @siwa.doc(tags=["分类管理"], summary="批量删除分类", description="[1,2,3] 删除ID为1、2、3的数据", body=CateBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -62,6 +65,7 @@ def dropBatch():
 # 编辑分类
 @cate.route("/cate", methods=["PATCH"])
 @siwa.doc(tags=["分类管理"], summary="编辑分类", body=CateBody)
+@TokenRequired
 def edit():
     cate = request.json
 
@@ -103,6 +107,7 @@ def get(id):
 @cate.route("/cate")
 @siwa.doc(tags=["分类管理"], summary="获取分类列表", description="不传参数表示从第1页开始 每页查询5条数据",
           query=CateQuery)
+@TokenRequired
 def list():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 5, type=int)
