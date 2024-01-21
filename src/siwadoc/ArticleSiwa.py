@@ -17,7 +17,7 @@ class ArticleBody(BaseModel):
     cover: str = Field(default="http://127.0.0.1:5000/1.jpg", description="文章封面")
     view: int = Field(default=10, description="文章浏览量")
     comment: int = Field(default=10, description="文章评论数量")
-    cate: str = Field(default="大前端", description="文章分类")
+    cids: str = Field(default="2,4", description="文章的分类id")
     tag: str = Field(default="大前端,Python,java", description="文章标签")
     createtime: datetime = Field(default=datetime.now(), description="文章创建时间")
 

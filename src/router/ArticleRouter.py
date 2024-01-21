@@ -2,6 +2,7 @@ from flask import Blueprint, request
 
 from src.model import db
 from src.model.ArticleModel import ArticleModel
+from src.model.CateModel import CateModel
 from src import siwa
 from src.siwadoc.ArticleSiwa import ArticleQuery, ArticleBody, ArticleBodyId
 from src.utils.jwt import TokenRequired
@@ -99,8 +100,25 @@ def list():
     paginate = ArticleModel.query.order_by(ArticleModel.createtime.desc()).paginate(page=page, per_page=size,
                                                                                     error_out=False)
 
+    result = []
+
+    # 关联分类表
+    for article in paginate:
+        article = article.to()
+
+        article["cate"] = []
+        # 将cid字符串转换为列表，并将字符串列表转换为数值列表
+        article["cids"] = [int(k) for k in article["cids"].split(",")]
+
+        # 循环每一项的分类id，找出文章所对应的那一个
+        for id in article["cids"]:
+            cate = CateModel.query.filter_by(id=id).first().to()
+            article["cate"].append(cate)
+
+        result.append(article)
+
     data = {
-        "result": [k.to() for k in paginate],
+        "result": result,
         "page": paginate.page,
         "size": paginate.per_page,
         "pages": paginate.pages,
