@@ -109,7 +109,7 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的评论在最前面排序
-    paginate = CommentModel.query.paginate(page=page, per_page=size, rror_out=False)
+    paginate = CommentModel.query.paginate(page=page, per_page=size, error_out=False)
 
     data = {
         "result": [k.to() for k in paginate],

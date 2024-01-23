@@ -1,12 +1,15 @@
-from flask import Flask
+# from flask import Flask
+#
+# app = Flask(__name__)
+#
+#
+# @app.route('/')
+# def Home():
+#     return "Hello World!"
+#
+#
+# if (__name__ == "__main__"):
+#     app.run(debug=True, port=7777)
 
-app = Flask(__name__)
+a = ["1", "2", "3"]
 
-
-@app.route('/')
-def Home():
-    return "Hello World!"
-
-
-if (__name__ == "__main__"):
-    app.run(debug=True, port=7777)

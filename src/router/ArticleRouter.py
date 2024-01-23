@@ -18,6 +18,9 @@ article = Blueprint("article", __name__)
 def add():
     article = request.json
 
+    # 将分类数组转换为字符串
+    article["cids"] = ",".join([str(k) for k in article["cids"]])
+
     data = ArticleModel(**article)
 
     db.session.add(data)
@@ -66,10 +69,24 @@ def dropBatch():
 def edit():
     article = request.json
 
-    data = ArticleModel.query.filter_by(id=article["id"]).update(article)
+    # 将分类数组转换为字符串
+    article["cids"] = ",".join([str(k) for k in article["cids"]])
+
+    data = ArticleModel.query.filter_by(id=article["id"])
 
     if not data:
         return Result(400, "编辑失败：没有此文章")
+
+    data.update({
+        "cids": article["cids"],
+        "comment": article["comment"],
+        "content": article["content"],
+        "cover": article["cover"],
+        "description": article["description"],
+        "tag": article["tag"],
+        "title": article["title"],
+        "view": article["view"]
+    })
 
     db.session.commit()
 
@@ -85,7 +102,17 @@ def get(id):
     if not data:
         return Result(400, "获取失败：没有此文章")
 
-    return Result(200, "获取文章详情成功", data.to())
+    article = data.to()
+    article["cate"] = []
+    # 将cid字符串转换为列表，并将字符串列表转换为数值列表
+    article["cids"] = [int(k) for k in article["cids"].split(",")]
+
+    # 循环每一项的分类id，找出文章所对应的那一个
+    for id in article["cids"]:
+        cate = CateModel.query.filter_by(id=id).first().to()
+        article["cate"].append(cate)
+
+    return Result(200, "获取文章详情成功", article)
 
 
 # 获取文章列表

@@ -1,3 +1,7 @@
+from http.client import HTTPException
+
+import MySQLdb
+
 from src.utils.response import Result
 
 from .ProjectRouter import project
@@ -27,11 +31,14 @@ app.register_blueprint(link, url_prefix=urlPrefix)
 app.register_blueprint(swiper, url_prefix=urlPrefix)
 app.register_blueprint(tag, url_prefix=urlPrefix)
 
+
 # 捕获全局HTTP请求异常
 @app.errorhandler(Exception)
 def GlobalError(e):
     # 获取异常类型
-    print(f"异常类型：{type(e).__name__} \n原因：{e}")
+    print(f"程序异常：{e}")
+
+    if str(e).find("MySQLdb.IntegrityError") != -1: return Result(500, f"数据库异常：可能是数据重复")
 
     # 返回适当的错误响应
     return Result(500, f"程序异常：{e}")
