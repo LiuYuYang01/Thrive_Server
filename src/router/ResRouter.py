@@ -75,7 +75,8 @@ def delete():
 @res.route("/file", methods=["GET"])
 @siwa.doc(tags=["文件管理"], summary="获取文件列表")
 def list():
-    dirs = get_directory_structure(os.path.join(app.root_path, app.config["UPLOAD_PATH"]))
+    upload = app.config["UPLOAD_PATH"][1:]
+    dirs = get_directory_structure(os.path.join(app.root_path, upload))
     return Result(200, "获取文件列表成功", dirs)
 
 
