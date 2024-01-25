@@ -11,27 +11,27 @@ from src import siwa
 # 创建蓝图
 res = Blueprint("res", __name__)
 
-from src.siwadoc.ResSiwa import ResBody
+from src.siwadoc.ResSiwa import ResBody, PathBody
 
 
 # 文件上传
-@res.route("/res", methods=["POST"])
-@siwa.doc(tags=["文件管理"], summary="文件上传", description="默认上传到upload目录，可以通过tagger指定文件上传的位置",
+@res.route("/file", methods=["POST"])
+@siwa.doc(tags=["文件管理"], summary="上传文件", description="默认上传到default目录，可以通过tagger指定文件上传的位置",
           files={'file': {"required": True, "single": False}},
           form=ResBody)
 def upload():
     from datetime import datetime
     from werkzeug.utils import secure_filename
 
-    # 获取年、月份
-    date = datetime.now()
-    year, month = str(date.year), str(date.month)
-
     # 获取上传的文件对象
     file = request.files['file']
 
     # 目标存放文件：默认为image
-    tagger = request.form.get("tagger", "image", type=str)
+    tagger = request.form.get("tagger", "default", type=str)
+
+    # 获取年、月份
+    date = datetime.now()
+    year, month = str(date.year), str(date.month)
 
     # 项目根目录
     path = app.root_path
@@ -57,10 +57,25 @@ def upload():
     return Result(200, "文件上传成功", url)
 
 
-@res.route("/res", methods=["GET"])
+# 删除文件
+@res.route("/file", methods=["DELETE"])
+@siwa.doc(tags=["文件管理"], summary="删除文件", body=PathBody,
+          description="根据文件的路径来删除")
+def delete():
+    path = request.json["path"]
+
+    try:
+        os.remove(app.root_path + app.config["UPLOAD_PATH"] + path)
+    except FileNotFoundError as e:
+        return Result(500, str(e))
+
+    return Result(200, "删除文件成功")
+
+
+@res.route("/file", methods=["GET"])
 @siwa.doc(tags=["文件管理"], summary="获取文件列表")
 def list():
-    dirs = get_directory_structure(os.path.join(app.root_path, "upload"))
+    dirs = get_directory_structure(os.path.join(app.root_path, app.config["UPLOAD_PATH"]))
     return Result(200, "获取文件列表成功", dirs)
 
 

@@ -75,7 +75,7 @@ def drop(id):
 
 # 批量删除
 @user.route("/user", methods=["DELETE"])
-@siwa.doc(tags=["用户管理"], summary="批量删除用户", description="[1,2,3] 删除ID为1、2、3的数据", body=UserBodyId)
+@siwa.doc(tags=["用户管理"], summary="批量删除用户", description="[5,2,3] 删除ID为1、2、3的数据", body=UserBodyId)
 def dropBatch():
     ids = request.json["ids"]
 
