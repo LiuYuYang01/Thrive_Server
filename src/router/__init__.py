@@ -1,7 +1,3 @@
-from http.client import HTTPException
-
-import MySQLdb
-
 from src.utils.response import Result
 
 from .ProjectRouter import project
@@ -12,6 +8,7 @@ from .SwiperRouter import swiper
 from .LinkRouter import link
 from .CommentRouter import comment
 from .CateRouter import cate
+from .ResRouter import res
 
 from src import app
 
@@ -24,6 +21,7 @@ urlPrefix = app.config["URL_PREFIX"]
 
 app.register_blueprint(project, url_prefix=urlPrefix)
 app.register_blueprint(user, url_prefix=urlPrefix)
+app.register_blueprint(res, url_prefix=urlPrefix)
 app.register_blueprint(cate, url_prefix=urlPrefix)
 app.register_blueprint(article, url_prefix=urlPrefix)
 app.register_blueprint(comment, url_prefix=urlPrefix)
