@@ -74,10 +74,18 @@ def dropBatch():
 def edit():
     cate = request.json
 
-    data = CateModel.query.filter_by(id=cate["id"]).update(cate)
-    print(data)
+    data = CateModel.query.filter_by(id=cate["id"])
+
     if not data:
         return Result(400, "编辑失败：没有此分类")
+
+    data.update({
+        "name": cate["name"],
+        "icon": cate["icon"],
+        "url": cate["url"],
+        "mark": cate["mark"],
+        "level": cate["level"]
+    })
 
     db.session.commit()
 
