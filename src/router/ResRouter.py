@@ -8,11 +8,11 @@ from src.utils.response import Result
 
 from src import siwa
 
-
 # 创建蓝图
 res = Blueprint("res", __name__)
 
 from src.siwadoc.ResSiwa import ResBody
+
 
 # 文件上传
 @res.route("/res", methods=["POST"])
@@ -56,3 +56,56 @@ def upload():
     url = f"{request.host_url}{dirPath}{fileName}"
     return Result(200, "文件上传成功", url)
 
+
+@res.route("/res", methods=["GET"])
+@siwa.doc(tags=["文件管理"], summary="获取文件列表")
+def list():
+    dirs = get_directory_structure(os.path.join(app.root_path, "upload"))
+    return Result(200, "获取文件列表成功", dirs)
+
+
+def get_directory_structure(path):
+    structure = []
+    if os.path.isdir(path):
+        items = os.listdir(path)
+
+        for item in items:
+            item_path = os.path.join(path, item)
+            # 如果是文件
+            if os.path.isdir(item_path):
+                # 如果没有子目录
+                if hasDirFile("dir", item_path):
+                    children = get_directory_structure(item_path)
+                    directory = {
+                        "children": children,
+                        "list": [],
+                        "name": item
+                    }
+                else:
+                    list = get_directory_structure(item_path)
+                    directory = {
+                        "children": [],
+                        "list": list,
+                        "name": item
+                    }
+
+                structure.append(directory)
+            else:
+                structure.append(item)
+    return structure
+
+
+# 判断指定目录中有没有目录或文件
+def hasDirFile(mark, directory):
+    if mark == "dir":
+        # 判断当前目录中是否有子目录
+        for item in os.listdir(directory):
+            if os.path.isdir(os.path.join(directory, item)):
+                return True
+        return False
+    elif mark == "file":
+        # 判断当前目录中是否有文件
+        for item in os.listdir(directory):
+            if os.path.isfile(os.path.join(directory, item)):
+                return True
+        return False
