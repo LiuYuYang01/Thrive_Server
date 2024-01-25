@@ -76,6 +76,8 @@ def getSystem():
 def getSite():
     p = ProjectModel()
 
+    p.keyword = (",").join(p.keyword)
+
     data = {
         'title': p.title,
         'subhead': p.subhead,
@@ -93,6 +95,8 @@ def getSite():
           body=ProjectBody)
 def editSite():
     web = request.json
+
+    web["keyword"] = web["keyword"].split(",")
 
     data = f"""class ProjectModel(object):
         title = "{web['title']}"  # 网站标题
