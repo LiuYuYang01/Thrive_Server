@@ -16,7 +16,7 @@ from src.siwadoc.ResSiwa import ResBody, PathBody
 
 # 文件上传
 @res.route("/file", methods=["POST"])
-@siwa.doc(tags=["文件管理"], summary="上传文件", description="默认上传到default目录，可以通过tagger指定文件上传的位置",
+@siwa.doc(tags=["文件管理"], summary="上传文件", description="默认上传到default目录，可以通过target指定文件上传的位置",
           files={'file': {"required": True, "single": False}},
           form=ResBody)
 def upload():
@@ -27,7 +27,7 @@ def upload():
     file = request.files['file']
 
     # 目标存放文件：默认为image
-    tagger = request.form.get("tagger", "default", type=str)
+    tagger = request.form.get("target", "default", type=str)
 
     # 获取年、月份
     date = datetime.now()
