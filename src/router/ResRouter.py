@@ -11,7 +11,7 @@ from src import siwa
 # 创建蓝图
 res = Blueprint("res", __name__)
 
-from src.siwadoc.ResSiwa import ResBody, PathBody
+from src.siwadoc.ResSiwa import ResBody, FileBody
 
 
 # 文件上传
@@ -59,13 +59,14 @@ def upload():
 
 # 删除文件
 @res.route("/file", methods=["DELETE"])
-@siwa.doc(tags=["文件管理"], summary="删除文件", body=PathBody,
+@siwa.doc(tags=["文件管理"], summary="删除文件", body=FileBody,
           description="根据文件的路径来删除")
 def delete():
-    path = request.json["path"]
+    files = request.json["files"]
 
     try:
-        os.remove(app.root_path + app.config["UPLOAD_PATH"] + path)
+        for file in files:
+            os.remove(app.root_path + app.config["UPLOAD_PATH"] + file)
     except FileNotFoundError as e:
         return Result(500, str(e))
 
