@@ -16,15 +16,16 @@ from src.siwadoc.ResSiwa import ResBody, FileBody
 
 # 文件上传
 @res.route("/file", methods=["POST"])
-@siwa.doc(tags=["文件管理"], summary="上传文件", description="默认上传到default目录，可以通过target指定文件上传的位置",
+@siwa.doc(tags=["文件管理"], summary="批量上传文件",
+          description="默认上传到default目录，可以通过target指定文件上传的位置",
           files={'file': {"required": True, "single": False}},
           form=ResBody)
 def upload():
     from datetime import datetime
     from werkzeug.utils import secure_filename
 
-    # 获取上传的文件对象
-    file = request.files['file']
+    # 获取上传的文件列表
+    files = request.files.getlist('file')
 
     # 目标存放文件：默认为image
     tagger = request.form.get("target", "default", type=str)
@@ -46,15 +47,21 @@ def upload():
     os.makedirs(os.path.join(uploadPath, year, month), exist_ok=True)
     dirPath = f"{tagger}/{year}/{month}/"
 
-    # 生成唯一文件名
-    fileName = secure_filename(randomName(file.filename))
+    # 保存所有文件的 URL
+    urls = []
 
-    # 将文件上传到指定的目录
-    file.save(os.path.join(uploadPath, year, month, fileName))
+    for file in files:
+        # 生成唯一文件名
+        fileName = secure_filename(randomName(file.filename))
 
-    # 拼接文件路径
-    url = f"{request.host_url}{dirPath}{fileName}"
-    return Result(200, "文件上传成功", url)
+        # 将文件上传到指定的目录
+        file.save(os.path.join(uploadPath, year, month, fileName))
+
+        # 拼接文件路径
+        url = f"{request.host_url}{dirPath}{fileName}"
+        urls.append(url)
+
+    return Result(200, "文件上传成功", urls)
 
 
 # 删除文件

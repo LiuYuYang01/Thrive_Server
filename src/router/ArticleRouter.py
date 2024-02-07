@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from sqlalchemy import text
 
 from src.model import db
 from src.model.ArticleModel import ArticleModel
@@ -152,6 +153,44 @@ def list():
         "total": paginate.total,
         "prev": paginate.has_prev,
         "next": paginate.has_next
+    }
+
+    return Result(200, "获取文章列表成功", data)
+
+
+# 获取指定分类中的所有文章
+@article.route("/article/<mark>")
+@siwa.doc(tags=["文章管理"], summary="获取指定分类中的所有文章", description="根据分类的标识查询",
+          query=ArticleQuery)
+def articleCate(mark):
+    page = request.args.get("page", 1, type=int)
+    size = request.args.get("size", 5, type=int)
+
+    # 自定义sql查询
+    sql_query = text(
+        "select a.* from article a, cate c where find_in_set(c.id,a.cids) and c.mark = :mark limit :size offset :offset")
+    sql_result = db.session.execute(sql_query, {'mark': mark, 'size': size, 'offset': (page - 1) * size})
+
+    result = []
+    for row in sql_result:
+        cate = []
+
+        # 循环每一项的分类id，找出文章所对应的那一个
+        for id in [int(k) for k in row.cids.split(",")]:
+            cate.append(CateModel.query.filter_by(id=id).first().to())
+
+        result.append({"title": row.title, "description": row.description, "content": row.content, "cover": row.cover,
+                     "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
+                     "createTime": row.create_time})
+
+    data = {
+        "result": result,
+        "page": page,
+        "size": size,
+        "pages": 0,
+        "total": len(result),
+        "prev": False,
+        "next": False
     }
 
     return Result(200, "获取文章列表成功", data)
