@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from src.model import db
 from src.model.LinkModel import LinkModel
 from src import siwa
+from src.model.TypeModel import TypeModel
 from src.siwadoc.LinkSiwa import LinkQuery, LinkBody, LinkBodyId
 from src.utils.jwt import TokenRequired
 from src.utils.response import Result
@@ -84,7 +85,10 @@ def get(id):
     if not data:
         return Result(400, "获取失败：没有此网站")
 
-    return Result(200, "获取网站详情成功", data.to())
+    data = data.to()
+    data["type"] = TypeModel.query.filter_by(id=data["type"]).first().to()["name"]
+
+    return Result(200, "获取网站详情成功", data)
 
 
 # 获取网站列表
@@ -98,8 +102,13 @@ def list():
     # 最新发布的网站在最前面排序
     paginate = LinkModel.query.order_by(LinkModel.createtime.desc()).paginate(page=page, per_page=size, error_out=False)
 
+    result = [k.to() for k in paginate]
+
+    for k in result:
+        k["type"] = TypeModel.query.filter_by(id=k["type"]).first().to()["name"]
+
     data = {
-        "result": [k.to() for k in paginate],
+        "result": result,
         "page": paginate.page,
         "size": paginate.per_page,
         "pages": paginate.pages,
