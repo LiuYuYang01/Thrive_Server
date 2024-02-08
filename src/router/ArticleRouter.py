@@ -179,9 +179,10 @@ def articleCate(mark):
         for id in [int(k) for k in row.cids.split(",")]:
             cate.append(CateModel.query.filter_by(id=id).first().to())
 
-        result.append({"title": row.title, "description": row.description, "content": row.content, "cover": row.cover,
-                     "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
-                     "createTime": row.create_time})
+        result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
+                       "cover": row.cover,
+                       "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
+                       "createTime": row.create_time})
 
     data = {
         "result": result,
