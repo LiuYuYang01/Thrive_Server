@@ -13,10 +13,10 @@ from .LinkTypeRouter import link_type
 
 from src import app
 
-from flask_cors import CORS
-
-# 注册CORS, "/*" 允许访问所有api
-CORS(app, resources=r'/*')
+# from flask_cors import CORS
+#
+# # 注册CORS, "/*" 允许访问所有api
+# CORS(app, resources=r'/*')
 
 urlPrefix = app.config["URL_PREFIX"]
 

@@ -1,9 +1,10 @@
 from flask import Flask
+from flask_socketio import SocketIO
 from flask_siwadoc import SiwaDoc
 
 app = Flask(__name__, static_url_path="/")
+socketio = SocketIO(app, cors_allowed_origins='*')
 siwa = SiwaDoc(app, title="Flask Siwadoc", description="一个自动生成openapi文档的库", version="2.0")
-
 
 def CreateApp(env):
     from src.model import CreateSQLAlchemy
@@ -21,5 +22,8 @@ def CreateApp(env):
 
     # 加载路由
     from src import router
+
+    # 即时通讯
+    from src.io import Chat
 
     return app
