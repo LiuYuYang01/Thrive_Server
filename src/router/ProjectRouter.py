@@ -138,9 +138,9 @@ def editLayout():
 
     data = f"""class LayoutModel(object):
         isArticleLayout = "{layout['isArticleLayout']}"
-        rightSidebar = "{layout['rightSidebar']}"
+        rightSidebar = {layout['rightSidebar']}
         swiperImage = "{layout['swiperImage']}"
-        swiperText = str({layout['swiperText']})
+        swiperText = {layout['swiperText']}
     """
 
     with open("src/model/LayoutModel.py", "w", encoding="utf8") as f:
