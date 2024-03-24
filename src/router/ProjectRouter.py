@@ -4,7 +4,7 @@ from datetime import datetime, date
 
 from flask import Blueprint, request
 
-from src.model.ProjectModel import ProjectModel
+from src.model.ProjectModel import ProjectModel, LayoutModel
 from src.utils.response import Result
 
 from src import siwa
@@ -110,3 +110,41 @@ def editSite():
         f.write(data)
 
     return Result(200, "修改网站配置成功")
+
+
+# 获取布局配置
+@project.route('/project/layout', methods=['GET'])
+@siwa.doc(tags=["全局配置"], summary="获取布局配置", description="获取布局配置：主题、文章列表、侧边栏、打字机等等")
+def getLayout():
+    l = LayoutModel()
+
+    data = {
+        'isTheme': l.isTheme,
+        'isArticleLayout': l.isArticleLayout,
+        'rightSidebar': l.rightSidebar,
+        'swiperImage': l.swiperImage,
+        'swiperText': l.swiperText,
+    }
+
+    return Result(200, "获取布局配置成功", data)
+
+
+# 修改布局配置
+@project.route('/project/layout', methods=['PATCH'])
+@siwa.doc(tags=["全局配置"], summary="修改布局配置", description="修改布局配置：主题、文章列表、侧边栏、打字机等等",
+          body=ProjectBody)
+def editLayout():
+    layout = request.json
+
+    data = f"""class LayoutModel(object):
+        isTheme = "{layout['isTheme']}"
+        isArticleLayout = "{layout['isArticleLayout']}"
+        rightSidebar = "{layout['rightSidebar']}"
+        swiperImage = "{layout['swiperImage']}"
+        swiperText = {layout['swiperText']}
+    """
+
+    with open("src/model/LayoutModel.py", "w", encoding="utf8") as f:
+        f.write(data)
+
+    return Result(200, "修改布局配置成功")
