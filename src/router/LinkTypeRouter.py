@@ -2,6 +2,7 @@ from flask import Blueprint, request
 
 from src.model import db
 from src.model.TypeModel import TypeModel
+from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 
 link_type = Blueprint("link_type", __name__)
@@ -9,6 +10,7 @@ link_type = Blueprint("link_type", __name__)
 
 # 新增网站类型
 @link_type.route("/link_type", methods=["POST"])
+@TokenRequired
 def add():
     link_type = request.json
 
@@ -22,6 +24,7 @@ def add():
 
 # 删除网站类型
 @link_type.route("/link_type/<int:id>", methods=["DELETE"])
+@TokenRequired
 def drop(id):
     data = TypeModel.query.filter_by(id=id).first()
 
@@ -36,6 +39,7 @@ def drop(id):
 
 # 批量删除
 @link_type.route("/link_type", methods=["DELETE"])
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -54,6 +58,7 @@ def dropBatch():
 
 # 编辑网站类型
 @link_type.route("/link_type", methods=["PATCH"])
+@TokenRequired
 def edit():
     link_type = request.json
 

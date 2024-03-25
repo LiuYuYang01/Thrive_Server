@@ -14,6 +14,7 @@ swiper = Blueprint("swiper", __name__)
 @swiper.route("/swiper", methods=["POST"])
 @siwa.doc(tags=["轮播图管理"], summary="新增轮播图", description="新增轮播图记得把id去掉，否则可能会导致重复id异常",
           body=SwiperBody)
+@TokenRequired
 def add():
     swiper = request.json
 
@@ -28,6 +29,7 @@ def add():
 # 删除轮播图
 @swiper.route("/swiper/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["轮播图管理"], summary="删除轮播图", description="通过ID删除指定轮播图")
+@TokenRequired
 def drop(id):
     data = SwiperModel.query.filter_by(id=id).first()
 
@@ -43,6 +45,7 @@ def drop(id):
 # 批量删除
 @swiper.route("/swiper", methods=["DELETE"])
 @siwa.doc(tags=["轮播图管理"], summary="批量删除轮播图", description="[1,2,3] 删除ID为1、2、3的数据", body=SwiperBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -62,6 +65,7 @@ def dropBatch():
 # 编辑轮播图
 @swiper.route("/swiper", methods=["PATCH"])
 @siwa.doc(tags=["轮播图管理"], summary="编辑轮播图", body=SwiperBody)
+@TokenRequired
 def edit():
     swiper = request.json
 

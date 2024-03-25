@@ -16,6 +16,7 @@ article = Blueprint("article", __name__)
 @article.route("/article", methods=["POST"])
 @siwa.doc(tags=["文章管理"], summary="新增文章", description="新增文章记得把id去掉，否则可能会导致重复id异常",
           body=ArticleBody)
+@TokenRequired
 def add():
     article = request.json
 
@@ -33,6 +34,7 @@ def add():
 # 删除文章
 @article.route("/article/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["文章管理"], summary="删除文章", description="通过ID删除指定文章")
+@TokenRequired
 def drop(id):
     data = ArticleModel.query.filter_by(id=id).first()
 
@@ -48,6 +50,7 @@ def drop(id):
 # 批量删除
 @article.route("/article", methods=["DELETE"])
 @siwa.doc(tags=["文章管理"], summary="批量删除文章", description="[1,2,3] 删除ID为1、2、3的数据", body=ArticleBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -67,6 +70,7 @@ def dropBatch():
 # 编辑文章
 @article.route("/article", methods=["PATCH"])
 @siwa.doc(tags=["文章管理"], summary="编辑文章", body=ArticleBody)
+@TokenRequired
 def edit():
     article = request.json
 

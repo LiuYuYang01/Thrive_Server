@@ -6,6 +6,7 @@ from flask import Blueprint, request
 
 from src.model.ProjectModel import ProjectModel
 from src.model.LayoutModel import LayoutModel
+from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 
 from src import siwa
@@ -19,6 +20,7 @@ from src.siwadoc.ProjectSiwa import ProjectBody
 # 获取系统配置
 @project.route("/project/system", methods=["GET"])
 @siwa.doc(tags=["全局配置"], summary="获取系统配置", description="获取系统配置：CPU、磁盘、IP、系统等等")
+@TokenRequired
 def getSystem():
     # 获取CPU信息
     cpu = psutil.cpu_percent(interval=1, percpu=True)
@@ -74,6 +76,7 @@ def getSystem():
 # 获取网站配置
 @project.route('/project/web', methods=['GET'])
 @siwa.doc(tags=["全局配置"], summary="获取网站配置", description="获取网站配置：标题、描述、LOGO、关键词等等")
+@TokenRequired
 def getSite():
     p = ProjectModel()
 
@@ -94,6 +97,7 @@ def getSite():
 @project.route('/project/web', methods=['PATCH'])
 @siwa.doc(tags=["全局配置"], summary="修改网站配置", description="修改网站配置：标题、描述、LOGO、关键词等等",
           body=ProjectBody)
+@TokenRequired
 def editSite():
     web = request.json
 
@@ -133,6 +137,7 @@ def getLayout():
 @project.route('/project/layout', methods=['PATCH'])
 @siwa.doc(tags=["全局配置"], summary="修改布局配置", description="修改布局配置：主题、文章列表、侧边栏、打字机等等",
           body=ProjectBody)
+@TokenRequired
 def editLayout():
     layout = request.json
 

@@ -14,6 +14,7 @@ comment = Blueprint("comment", __name__)
 @comment.route("/comment", methods=["POST"])
 @siwa.doc(tags=["评论管理"], summary="新增评论", description="新增评论记得把id去掉，否则可能会导致重复id异常",
           body=CommentBody)
+@TokenRequired
 def add():
     comment = request.json
 
@@ -28,6 +29,7 @@ def add():
 # 删除评论
 @comment.route("/comment/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["评论管理"], summary="删除评论", description="通过ID删除指定评论")
+@TokenRequired
 def drop(id):
     data = CommentModel.query.filter_by(id=id).first()
 
@@ -43,6 +45,7 @@ def drop(id):
 # 批量删除
 @comment.route("/comment", methods=["DELETE"])
 @siwa.doc(tags=["评论管理"], summary="批量删除评论", description="[1,2,3] 删除ID为1、2、3的数据", body=CommentBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -62,6 +65,7 @@ def dropBatch():
 # 编辑评论
 @comment.route("/comment", methods=["PATCH"])
 @siwa.doc(tags=["评论管理"], summary="编辑评论", body=CommentBody)
+@TokenRequired
 def edit():
     comment = request.json
 
@@ -77,6 +81,7 @@ def edit():
 
 # 审核评论
 @comment.route("/comment/audit/<int:id>", methods=["PATCH"])
+@TokenRequired
 def audit(id):
     data = CommentModel.query.filter_by(id=id).update({'audit': 1})
 

@@ -15,7 +15,7 @@ cate = Blueprint("cate", __name__)
 @siwa.doc(tags=["分类管理"], summary="新增分类",
           description="level的值为0表示新增一级分类，值为其他分类的id表示这个分类为二级。比如分类A的id为3，如果将分类B的level设置为分类A的ID（3），那么分类B就是分类A的子分类",
           body=CateBody)
-# @TokenRequired
+@TokenRequired
 def add():
     cate = request.json
 
@@ -30,7 +30,7 @@ def add():
 # 删除分类
 @cate.route("/cate/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["分类管理"], summary="删除分类", description="通过ID删除指定分类")
-# @TokenRequired
+@TokenRequired
 def drop(id):
     data = CateModel.query.filter_by(id=id).first()
 
@@ -122,7 +122,6 @@ def get(id):
 @cate.route("/cate")
 @siwa.doc(tags=["分类管理"], summary="获取分类列表", description="不传参数表示从第1页开始 每页查询5条数据",
           query=CateQuery)
-# @TokenRequired
 def list():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 5, type=int)

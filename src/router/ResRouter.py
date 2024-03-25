@@ -4,6 +4,7 @@ from flask import Blueprint, request
 
 from src import app
 from src.utils.file import randomName
+from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 
 from src import siwa
@@ -20,6 +21,7 @@ from src.siwadoc.ResSiwa import ResBody, FileBody
           description="默认上传到default目录，可以通过target指定文件上传的位置",
           files={'file': {"required": True, "single": False}},
           form=ResBody)
+@TokenRequired
 def upload():
     from datetime import datetime
     from werkzeug.utils import secure_filename
@@ -68,6 +70,7 @@ def upload():
 @res.route("/file", methods=["DELETE"])
 @siwa.doc(tags=["文件管理"], summary="删除文件", body=FileBody,
           description="根据文件的路径来删除")
+@TokenRequired
 def delete():
     files = request.json["files"]
 
@@ -80,8 +83,10 @@ def delete():
     return Result(200, "删除文件成功")
 
 
+# 获取文件列表
 @res.route("/file", methods=["GET"])
 @siwa.doc(tags=["文件管理"], summary="获取文件列表")
+@TokenRequired
 def list():
     upload = app.config["UPLOAD_PATH"][1:]
     dirs = get_directory_structure(os.path.join(app.root_path, upload))

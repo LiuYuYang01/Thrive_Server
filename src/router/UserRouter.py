@@ -47,6 +47,7 @@ def login():
 @user.route("/user", methods=["POST"])
 @siwa.doc(tags=["用户管理"], summary="新增用户", description="新增用户记得把id去掉，否则可能会导致重复id异常",
           body=UserBody)
+@TokenRequired
 def add():
     user = request.json
 
@@ -61,6 +62,7 @@ def add():
 # 删除用户
 @user.route("/user/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["用户管理"], summary="删除用户", description="通过ID删除指定用户")
+@TokenRequired
 def drop(id):
     data = UserModel.query.filter_by(id=id).first()
 
@@ -76,6 +78,7 @@ def drop(id):
 # 批量删除
 @user.route("/user", methods=["DELETE"])
 @siwa.doc(tags=["用户管理"], summary="批量删除用户", description="[5,2,3] 删除ID为1、2、3的数据", body=UserBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -95,6 +98,7 @@ def dropBatch():
 # 编辑用户
 @user.route("/user", methods=["PATCH"])
 @siwa.doc(tags=["用户管理"], summary="编辑用户", body=UserBody)
+@TokenRequired
 def edit():
     user = request.json
 

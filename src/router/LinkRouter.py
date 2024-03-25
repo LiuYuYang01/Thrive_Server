@@ -15,6 +15,7 @@ link = Blueprint("link", __name__)
 @link.route("/link", methods=["POST"])
 @siwa.doc(tags=["网站管理"], summary="新增网站", description="新增网站记得把id去掉，否则可能会导致重复id异常",
           body=LinkBody)
+@TokenRequired
 def add():
     link = request.json
 
@@ -29,6 +30,7 @@ def add():
 # 删除网站
 @link.route("/link/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["网站管理"], summary="删除网站", description="通过ID删除指定网站")
+@TokenRequired
 def drop(id):
     data = LinkModel.query.filter_by(id=id).first()
 
@@ -44,6 +46,7 @@ def drop(id):
 # 批量删除
 @link.route("/link", methods=["DELETE"])
 @siwa.doc(tags=["网站管理"], summary="批量删除网站", description="[1,2,3] 删除ID为1、2、3的数据", body=LinkBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -63,6 +66,7 @@ def dropBatch():
 # 编辑网站
 @link.route("/link", methods=["PATCH"])
 @siwa.doc(tags=["网站管理"], summary="编辑网站", body=LinkBody)
+@TokenRequired
 def edit():
     link = request.json
 

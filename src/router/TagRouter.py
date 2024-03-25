@@ -14,6 +14,7 @@ tag = Blueprint("tag", __name__)
 @tag.route("/tag", methods=["POST"])
 @siwa.doc(tags=["标签管理"], summary="新增标签", description="新增标签记得把id去掉，否则可能会导致重复id异常",
           body=TagBody)
+@TokenRequired
 def add():
     tag = request.json
 
@@ -28,6 +29,7 @@ def add():
 # 删除标签
 @tag.route("/tag/<int:id>", methods=["DELETE"])
 @siwa.doc(tags=["标签管理"], summary="删除标签", description="通过ID删除指定标签")
+@TokenRequired
 def drop(id):
     data = TagModel.query.filter_by(id=id).first()
 
@@ -43,6 +45,7 @@ def drop(id):
 # 批量删除
 @tag.route("/tag", methods=["DELETE"])
 @siwa.doc(tags=["标签管理"], summary="批量删除标签", description="[1,2,3] 删除ID为1、2、3的数据", body=TagBodyId)
+@TokenRequired
 def dropBatch():
     ids = request.json["ids"]
 
@@ -62,6 +65,7 @@ def dropBatch():
 # 编辑标签
 @tag.route("/tag", methods=["PATCH"])
 @siwa.doc(tags=["标签管理"], summary="编辑标签", body=TagBody)
+@TokenRequired
 def edit():
     tag = request.json
 
