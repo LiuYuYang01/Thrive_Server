@@ -191,9 +191,9 @@ def randomArticle():
         result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
                        "cover": row.cover,
                        "view": row.view, "comment": row.comment, "cids": row.cids, "tag": row.tag,
-                       "createTime": row.create_time})
+                       "createtime": row.create_time})
 
-    return Result(200, "获取文章列表成功", result)
+    return Result(200, "获取随机文章成功", result)
 
 
 # 获取指定分类中的所有文章
@@ -220,7 +220,7 @@ def articleCate(mark):
         result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
                        "cover": row.cover,
                        "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
-                       "createTime": row.create_time})
+                       "createtime": row.create_time})
 
     data = {
         "result": result,
