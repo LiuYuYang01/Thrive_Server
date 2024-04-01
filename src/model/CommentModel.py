@@ -15,5 +15,5 @@ class CommentModel(BaseModel):
     url = db.Column(db.String(500))  # 地址
     aid = db.Column(db.Integer)  # 该评论所在的文章id
     rid = db.Column(db.Integer)  # 所有回复这条评论的id
-    audit = db.Column(db.Integer)  # 评论是否审核成功
+    audit = db.Column(db.Integer, default=0)  # 评论是否审核成功
     createtime = db.Column("create_time", db.DateTime, default=datetime.utcnow)  # 创建时间

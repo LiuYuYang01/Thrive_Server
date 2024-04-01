@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from sqlalchemy import desc
 
 from src.model import db
 from src.model.CommentModel import CommentModel
@@ -14,7 +15,6 @@ comment = Blueprint("comment", __name__)
 @comment.route("/comment", methods=["POST"])
 @siwa.doc(tags=["评论管理"], summary="新增评论", description="新增评论记得把id去掉，否则可能会导致重复id异常",
           body=CommentBody)
-@TokenRequired
 def add():
     comment = request.json
 
@@ -114,7 +114,8 @@ def list():
     size = request.args.get("size", 5, type=int)
 
     # 最新发布的评论在最前面排序
-    paginate = CommentModel.query.paginate(page=page, per_page=size, error_out=False)
+    paginate = CommentModel.query.order_by(desc(CommentModel.createtime)).paginate(page=page, per_page=size,
+                                                                                   error_out=False)
 
     data = {
         "result": [k.to() for k in paginate],
@@ -127,3 +128,29 @@ def list():
     }
 
     return Result(200, "获取评论列表成功", data)
+
+
+# 获取指定文章中的所有评论
+@comment.route("/comment/article/<int:aid>")
+@siwa.doc(tags=["评论管理"], summary="获取指定文章中的评论", description="传入指定文章的ID")
+def articleComment(aid):
+    # 最新发布的评论在最前面排序
+    list = CommentModel.query.filter_by(aid=aid, audit=1).order_by(desc(CommentModel.createtime)).all()
+
+    data = build_hierarchy([k.to() for k in list], 0)
+
+    return Result(200, "获取指定文章评论成功", data)
+
+
+def build_hierarchy(data, rid):
+    result = []
+
+    for item in data:
+        if item['audit'] == 1:
+            if item['rid'] == rid:
+                children = build_hierarchy(data, item['id'])
+                if children:
+                    item['children'] = children
+                result.append(item)
+
+    return result

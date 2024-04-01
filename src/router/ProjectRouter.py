@@ -76,7 +76,6 @@ def getSystem():
 # 获取网站配置
 @project.route('/project/web', methods=['GET'])
 @siwa.doc(tags=["全局配置"], summary="获取网站配置", description="获取网站配置：标题、描述、LOGO、关键词等等")
-@TokenRequired
 def getSite():
     p = ProjectModel()
 
