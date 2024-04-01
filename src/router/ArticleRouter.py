@@ -113,92 +113,105 @@ def get(id):
     article["cids"] = [int(k) for k in article["cids"].split(",")]
 
     # 循环每一项的分类id，找出文章所对应的那一个
-    for id in article["cids"]:
-        cate = CateModel.query.filter_by(id=id).first().to()
+    for cid in article["cids"]:
+        cate = CateModel.query.filter_by(id=cid).first().to()
         article["cate"].append(cate)
 
     # 查询上一个文章
-    prev = ArticleModel.query.filter(ArticleModel.id < id).order_by(ArticleModel.id.desc()).first()
+    prev = ArticleModel.query.filter(ArticleModel.createtime > article["createtime"]).order_by(
+        ArticleModel.createtime.desc()).first()
     # 查询下一个文章
-    next = ArticleModel.query.filter(ArticleModel.id > id).order_by(ArticleModel.id.asc()).first()
+    next = ArticleModel.query.filter(ArticleModel.createtime < article["createtime"]).order_by(
+        ArticleModel.createtime.asc()).first()
 
-    return Result(200, "获取文章详情成功", {**article, "prev": prev.to(), "next": next.to()})
+    result = {}
 
-    # 获取文章列表
-    @article.route("/article")
-    @siwa.doc(tags=["文章管理"], summary="获取文章列表", description="不传参数表示从第1页开始 每页查询5条数据",
-              query=ArticleQuery)
-    def list():
-        page = request.args.get("page", 1, type=int)
-        size = request.args.get("size", 5, type=int)
+    if prev is None:
+        result = {**article, "prev": prev, "next": next.to()}
+    elif next is None:
+        result = {**article, "prev": prev, "next": next}
+    else:
+        result = {**article, "prev": prev.to(), "next": next.to()}
 
-        # 最新发布的文章在最前面排序
-        paginate = ArticleModel.query.order_by(ArticleModel.createtime.desc()).paginate(page=page, per_page=size,
-                                                                                        error_out=False)
+    return Result(200, "获取文章详情成功", result)
 
-        result = []
 
-        # 关联分类表
-        for article in paginate:
-            article = article.to()
+# 获取文章列表
+@article.route("/article")
+@siwa.doc(tags=["文章管理"], summary="获取文章列表", description="不传参数表示从第1页开始 每页查询5条数据",
+          query=ArticleQuery)
+def list():
+    page = request.args.get("page", 1, type=int)
+    size = request.args.get("size", 5, type=int)
 
-            article["cate"] = []
-            # 将cid字符串转换为列表，并将字符串列表转换为数值列表
-            article["cids"] = [int(k) for k in article["cids"].split(",")]
+    # 最新发布的文章在最前面排序
+    paginate = ArticleModel.query.order_by(ArticleModel.createtime.desc()).paginate(page=page, per_page=size,
+                                                                                    error_out=False)
 
-            # 循环每一项的分类id，找出文章所对应的那一个
-            for id in article["cids"]:
-                cate = CateModel.query.filter_by(id=id).first().to()
-                article["cate"].append(cate)
+    result = []
 
-            result.append(article)
+    # 关联分类表
+    for article in paginate:
+        article = article.to()
 
-        data = {
-            "result": result,
-            "page": paginate.page,
-            "size": paginate.per_page,
-            "pages": paginate.pages,
-            "total": paginate.total,
-            "prev": paginate.has_prev,
-            "next": paginate.has_next
-        }
+        article["cate"] = []
+        # 将cid字符串转换为列表，并将字符串列表转换为数值列表
+        article["cids"] = [int(k) for k in article["cids"].split(",")]
 
-        return Result(200, "获取文章列表成功", data)
+        # 循环每一项的分类id，找出文章所对应的那一个
+        for id in article["cids"]:
+            cate = CateModel.query.filter_by(id=id).first().to()
+            article["cate"].append(cate)
 
-    # 获取指定分类中的所有文章
-    @article.route("/article/<mark>")
-    @siwa.doc(tags=["文章管理"], summary="获取指定分类中的所有文章", description="根据分类的标识查询",
-              query=ArticleQuery)
-    def articleCate(mark):
-        page = request.args.get("page", 1, type=int)
-        size = request.args.get("size", 5, type=int)
+        result.append(article)
 
-        # 自定义sql查询
-        sql_query = text(
-            "select a.* from article a, cate c where find_in_set(c.id,a.cids) and c.mark = :mark limit :size offset :offset")
-        sql_result = db.session.execute(sql_query, {'mark': mark, 'size': size, 'offset': (page - 1) * size})
+    data = {
+        "result": result,
+        "page": paginate.page,
+        "size": paginate.per_page,
+        "pages": paginate.pages,
+        "total": paginate.total,
+        "prev": paginate.has_prev,
+        "next": paginate.has_next
+    }
 
-        result = []
-        for row in sql_result:
-            cate = []
+    return Result(200, "获取文章列表成功", data)
 
-            # 循环每一项的分类id，找出文章所对应的那一个
-            for id in [int(k) for k in row.cids.split(",")]:
-                cate.append(CateModel.query.filter_by(id=id).first().to())
 
-            result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
-                           "cover": row.cover,
-                           "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
-                           "createTime": row.create_time})
+# 获取指定分类中的所有文章
+@article.route("/article/<mark>")
+@siwa.doc(tags=["文章管理"], summary="获取指定分类中的所有文章", description="根据分类的标识查询",
+          query=ArticleQuery)
+def articleCate(mark):
+    page = request.args.get("page", 1, type=int)
+    size = request.args.get("size", 5, type=int)
 
-        data = {
-            "result": result,
-            "page": page,
-            "size": size,
-            "pages": 0,
-            "total": len(result),
-            "prev": False,
-            "next": False
-        }
+    # 自定义sql查询
+    sql_query = text(
+        "select a.* from article a, cate c where find_in_set(c.id,a.cids) and c.mark = :mark limit :size offset :offset")
+    sql_result = db.session.execute(sql_query, {'mark': mark, 'size': size, 'offset': (page - 1) * size})
 
-        return Result(200, "获取文章列表成功", data)
+    result = []
+    for row in sql_result:
+        cate = []
+
+        # 循环每一项的分类id，找出文章所对应的那一个
+        for id in [int(k) for k in row.cids.split(",")]:
+            cate.append(CateModel.query.filter_by(id=id).first().to())
+
+        result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
+                       "cover": row.cover,
+                       "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
+                       "createTime": row.create_time})
+
+    data = {
+        "result": result,
+        "page": page,
+        "size": size,
+        "pages": 0,
+        "total": len(result),
+        "prev": False,
+        "next": False
+    }
+
+    return Result(200, "获取文章列表成功", data)
