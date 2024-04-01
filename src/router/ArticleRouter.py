@@ -129,7 +129,7 @@ def get(id):
     if prev is None:
         result = {**article, "prev": prev, "next": next.to()}
     elif next is None:
-        result = {**article, "prev": prev, "next": next}
+        result = {**article, "prev": prev.to(), "next": next}
     else:
         result = {**article, "prev": prev.to(), "next": next.to()}
 
