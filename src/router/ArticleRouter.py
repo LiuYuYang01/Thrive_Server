@@ -178,6 +178,24 @@ def list():
     return Result(200, "获取文章列表成功", data)
 
 
+# 随机五篇文章
+@article.route("/article/random")
+@siwa.doc(tags=["文章管理"], summary="获取随机五篇文章")
+def randomArticle():
+    sql_query = text(
+        "select * from article order by rand() limit 5")
+    sql_result = db.session.execute(sql_query)
+
+    result = []
+    for row in sql_result:
+        result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
+                       "cover": row.cover,
+                       "view": row.view, "comment": row.comment, "cids": row.cids, "tag": row.tag,
+                       "createTime": row.create_time})
+
+    return Result(200, "获取文章列表成功", result)
+
+
 # 获取指定分类中的所有文章
 @article.route("/article/<mark>")
 @siwa.doc(tags=["文章管理"], summary="获取指定分类中的所有文章", description="根据分类的标识查询",
