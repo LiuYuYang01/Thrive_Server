@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from sqlalchemy import desc
 
 from src.model import db
+from src.model.ArticleModel import ArticleModel
 from src.model.CommentModel import CommentModel
 from src import siwa
 from src.siwadoc.CommentSiwa import CommentQuery, CommentBody, CommentBodyId
@@ -117,8 +118,21 @@ def list():
     paginate = CommentModel.query.order_by(desc(CommentModel.createtime)).paginate(page=page, per_page=size,
                                                                                    error_out=False)
 
+    result = []
+
+    # 给每个评论绑定对应的文章标题
+    for data in paginate:
+        comment = data.to()
+
+        art = ArticleModel.query.filter_by(id=comment["aid"]).first()
+        if art is not None:
+            comment["article"] = art.title
+        else:
+            comment["article"] = "子级"
+        result.append(comment)
+
     data = {
-        "result": [k.to() for k in paginate],
+        "result": result,
         "page": paginate.page,
         "size": paginate.per_page,
         "pages": paginate.pages,
