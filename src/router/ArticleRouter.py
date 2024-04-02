@@ -85,7 +85,6 @@ def edit():
 
     data.update({
         "cids": article["cids"],
-        "comment": article["comment"],
         "content": article["content"],
         "cover": article["cover"],
         "description": article["description"],
@@ -201,7 +200,7 @@ def randomArticle():
     for row in sql:
         result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
                        "cover": row.cover,
-                       "view": row.view, "comment": row.comment, "cids": row.cids, "tag": row.tag,
+                       "view": row.view, "cids": row.cids, "tag": row.tag,
                        "createtime": row.create_time})
 
     return Result(200, "获取随机文章成功", result)
@@ -245,7 +244,7 @@ def articleCate(mark):
 
         result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
                        "cover": row.cover,
-                       "view": row.view, "comment": row.comment, "cids": row.cids, "cate": cate, "tag": row.tag,
+                       "view": row.view, "cids": row.cids, "cate": cate, "tag": row.tag,
                        "createtime": row.create_time})
 
     data = {
