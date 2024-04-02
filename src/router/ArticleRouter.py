@@ -5,6 +5,7 @@ from src.model import db
 from src.model.ArticleModel import ArticleModel
 from src.model.CateModel import CateModel
 from src import siwa
+from src.model.CommentModel import CommentModel
 from src.siwadoc.ArticleSiwa import ArticleQuery, ArticleBody, ArticleBodyId
 from src.utils.jwt import TokenRequired
 from src.utils.response import Result
@@ -104,6 +105,9 @@ def edit():
 def get(id):
     data = ArticleModel.query.filter_by(id=id).first()
 
+    # 获取评论数量
+    comment = CommentModel.query.filter_by(aid=id).all()
+
     if not data:
         return Result(400, "获取失败：没有此文章")
 
@@ -116,6 +120,9 @@ def get(id):
     for cid in article["cids"]:
         cate = CateModel.query.filter_by(id=cid).first().to()
         article["cate"].append(cate)
+
+    # 设置评论数量
+    article["comment"] = len(comment)
 
     # 查询上一个文章
     prev = ArticleModel.query.filter(ArticleModel.createtime < article["createtime"]).order_by(
@@ -153,6 +160,10 @@ def list():
     # 关联分类表
     for article in paginate:
         article = article.to()
+
+        # 获取评论数量
+        comment = CommentModel.query.filter_by(aid=article["id"]).all()
+        article["comment"] = len(comment)
 
         article["cate"] = []
         # 将cid字符串转换为列表，并将字符串列表转换为数值列表
@@ -200,8 +211,7 @@ def randomArticle():
 @article.route("/article/view/<int:id>", methods=["PATCH"])
 @siwa.doc(tags=["文章管理"], summary="递增文章浏览量")
 def editView(id):
-    query = text(
-        "update article set view = view + 1 where id = :id")
+    query = text("update article set view = view + 1 where id = :id")
     sql = db.session.execute(query, {"id": id})
 
     db.session.commit()

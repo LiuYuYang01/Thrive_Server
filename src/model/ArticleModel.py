@@ -13,7 +13,7 @@ class ArticleModel(BaseModel):
     content = db.Column(db.Text)  # 文章内容
     cover = db.Column(db.String(300))  # 文章封面
     view = db.Column(db.Integer, default=0)  # 文章浏览量
-    comment = db.Column(db.Integer, default=0)  # 评论数量
+    # comment = db.Column(db.Integer, default=0)  # 评论数量
     cids = db.Column(db.String(255))  # 文章分类
     tag = db.Column(db.String(100))  # 文章标签
     createtime = db.Column("create_time", db.DateTime, default=datetime.utcnow)  # 创建时间
