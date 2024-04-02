@@ -118,10 +118,10 @@ def get(id):
         article["cate"].append(cate)
 
     # 查询上一个文章
-    prev = ArticleModel.query.filter(ArticleModel.createtime > article["createtime"]).order_by(
+    prev = ArticleModel.query.filter(ArticleModel.createtime < article["createtime"]).order_by(
         ArticleModel.createtime.desc()).first()
     # 查询下一个文章
-    next = ArticleModel.query.filter(ArticleModel.createtime < article["createtime"]).order_by(
+    next = ArticleModel.query.filter(ArticleModel.createtime > article["createtime"]).order_by(
         ArticleModel.createtime.asc()).first()
 
     result = {}
@@ -182,18 +182,34 @@ def list():
 @article.route("/article/random")
 @siwa.doc(tags=["文章管理"], summary="获取随机五篇文章")
 def randomArticle():
-    sql_query = text(
+    query = text(
         "select * from article order by rand() limit 5")
-    sql_result = db.session.execute(sql_query)
+    sql = db.session.execute(query)
 
     result = []
-    for row in sql_result:
+    for row in sql:
         result.append({"id": row.id, "title": row.title, "description": row.description, "content": row.content,
                        "cover": row.cover,
                        "view": row.view, "comment": row.comment, "cids": row.cids, "tag": row.tag,
                        "createtime": row.create_time})
 
     return Result(200, "获取随机文章成功", result)
+
+
+# 递增文章浏览量
+@article.route("/article/view/<int:id>", methods=["PATCH"])
+@siwa.doc(tags=["文章管理"], summary="递增文章浏览量")
+def editView(id):
+    query = text(
+        "update article set view = view + 1 where id = :id")
+    sql = db.session.execute(query, {"id": id})
+
+    db.session.commit()
+
+    if sql.rowcount == 0:
+        return Result(400, "递增失败")
+
+    return Result(200, "递增成功")
 
 
 # 获取指定分类中的所有文章
@@ -205,12 +221,12 @@ def articleCate(mark):
     size = request.args.get("size", 5, type=int)
 
     # 自定义sql查询
-    sql_query = text(
+    query = text(
         "select a.* from article a, cate c where find_in_set(c.id,a.cids) and c.mark = :mark limit :size offset :offset")
-    sql_result = db.session.execute(sql_query, {'mark': mark, 'size': size, 'offset': (page - 1) * size})
+    sql = db.session.execute(query, {'mark': mark, 'size': size, 'offset': (page - 1) * size})
 
     result = []
-    for row in sql_result:
+    for row in sql:
         cate = []
 
         # 循环每一项的分类id，找出文章所对应的那一个
