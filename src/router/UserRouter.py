@@ -9,6 +9,7 @@ from src.siwadoc.UserSiwa import UserQuery, LoginBody, UserBody, UserBodyId
 from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 from datetime import datetime, timedelta
+from hashlib import md5
 
 user = Blueprint("user", __name__)
 
@@ -22,6 +23,9 @@ def login():
     data = UserModel.query.filter_by(username=user["username"]).first().to()
     if not data: return Result(400, "登录失败：没有此用户")
 
+    # 给密码加密后与数据库中的做对比
+    user["password"] = md5(user["password"].encode()).hexdigest()
+
     if user["password"] != data["password"]: return Result(400, "登录失败：用户密码错误")
 
     # 加载配置信息
@@ -30,7 +34,6 @@ def login():
     algorithm = app.config["ALGORITHM"]
 
     payload = {
-        # "exp": datetime.utcnow() + timedelta(days=expire)
         "exp": datetime.utcnow() + timedelta(seconds=expire)
     }
 
@@ -50,6 +53,9 @@ def login():
 @TokenRequired
 def add():
     user = request.json
+
+    # 密码加密处理
+    user["password"] = md5(user["password"].encode()).hexdigest()
 
     data = UserModel(**user)
 
