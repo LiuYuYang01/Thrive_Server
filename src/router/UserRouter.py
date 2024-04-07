@@ -185,7 +185,7 @@ def editAdminPass():
 
     # 判断旧密码是否正确
     if user["oldPassword"] == data.password:
-        data.password = user["newPassword"]
+        data.password = md5(user["newPassword"].encode()).hexdigest()
         db.session.commit()
 
         return Result(200, "编辑成功")
