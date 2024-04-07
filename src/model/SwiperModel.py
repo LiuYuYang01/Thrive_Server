@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from src.model import db
 from src.utils.model import BaseModel
 

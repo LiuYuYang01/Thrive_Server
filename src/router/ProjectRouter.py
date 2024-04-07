@@ -4,8 +4,8 @@ from datetime import datetime, date
 
 from flask import Blueprint, request
 
-from src.model.ProjectModel import ProjectModel
-from src.model.LayoutModel import LayoutModel
+from src.model.system.ProjectModel import ProjectModel
+from src.model.system.LayoutModel import LayoutModel
 from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 
@@ -82,11 +82,17 @@ def getSite():
     p.keyword = (",").join(p.keyword)
 
     data = {
+        'url': p.url,
+        'favicon': p.favicon,
         'title': p.title,
         'subhead': p.subhead,
-        'logo': p.logo,
+        'light_logo': p.light_logo,
+        'dark_logo': p.dark_logo,
         'description': p.description,
-        'keyword': p.keyword
+        'keyword': p.keyword,
+        'footer': p.footer,
+        'font': p.font,
+        'social': p.social
     }
 
     return Result(200, "获取网站配置成功", data)
@@ -103,14 +109,20 @@ def editSite():
     web["keyword"] = web["keyword"].split(",")
 
     data = f"""class ProjectModel(object):
+        url = "{web['url']}"  # 网站链接
+        favicon = "{web['favicon']}"  # 网站图标
         title = "{web['title']}"  # 网站标题
         subhead = "{web['subhead']}"  # 网站副标题
-        logo = "{web['logo']}"  # 网站图标
+        light_logo = "{web['light_logo']}"  # 白天主题logo
+        dark_logo = "{web['dark_logo']}"  # 暗黑主题logo
         description = "{web['description']}"  # 网站描述
         keyword = {web['keyword']}  # 网站SEO关键词
+        footer = "{web['footer']}" # 底部描述
+        font = "{web['font']}" # 字体链接
+        social = {web['social']} # 社交账号
     """
 
-    with open("src/model/ProjectModel.py", "w", encoding="utf8") as f:
+    with open("src/model/system/ProjectModel.py", "w", encoding="utf8") as f:
         f.write(data)
 
     return Result(200, "修改网站配置成功")
@@ -147,7 +159,7 @@ def editLayout():
         swiperText = {layout['swiperText']}
     """
 
-    with open("src/model/LayoutModel.py", "w", encoding="utf8") as f:
+    with open("src/model/system/LayoutModel.py", "w", encoding="utf8") as f:
         f.write(data)
 
     return Result(200, "修改布局配置成功")
