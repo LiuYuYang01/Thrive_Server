@@ -25,6 +25,10 @@ class UserBody(BaseModel):
     role: str = Field(default="admin", description="用户组")
     createtime: datetime = Field(default=datetime.now(), description="用户加入时间")
 
+class UserAdminPass(BaseModel):
+    username: str = Field(default="liuyuyang", description="用户名")
+    oldPassword: str = Field(default="123456", description="旧密码")
+    newPassword: str = Field(default="123123", description="新密码")
 
 class UserBodyId(BaseModel):
     ids: ConstrainedList[int] = Field(default=[1, 2, 3], description="ID列表")

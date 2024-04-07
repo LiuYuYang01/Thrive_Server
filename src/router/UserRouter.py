@@ -5,7 +5,7 @@ from src import app
 from src.model import db
 from src.model.UserModel import UserModel
 from src import siwa
-from src.siwadoc.UserSiwa import UserQuery, LoginBody, UserBody, UserBodyId
+from src.siwadoc.UserSiwa import UserQuery, LoginBody, UserBody, UserBodyId, UserAdminPass
 from src.utils.jwt import TokenRequired
 from src.utils.response import Result
 from datetime import datetime, timedelta
@@ -108,6 +108,9 @@ def dropBatch():
 def edit():
     user = request.json
 
+    # 密码加密处理
+    user["password"] = md5(user["password"].encode()).hexdigest()
+
     data = UserModel.query.filter_by(id=user["id"]).update(user)
 
     if not data:
@@ -149,7 +152,7 @@ def list():
 
     # 删除所有的密码字段
     for data in result:
-         del data["password"]
+        del data["password"]
 
     data = {
         "result": result,
@@ -162,3 +165,29 @@ def list():
     }
 
     return Result(200, "获取用户列表成功", data)
+
+
+# 修改管理员账号密码
+@user.route("/user/admin", methods=["PATCH"])
+@siwa.doc(tags=["用户管理"], summary="修改管理员账号密码", body=UserAdminPass)
+@TokenRequired
+def editAdminPass():
+    user = request.json
+
+    # 查找管理员账号是否存在
+    data = UserModel.query.filter_by(username=user["username"]).first()
+
+    if not data:
+        return Result(400, "编辑失败：没有此用户")
+
+    # 密码加密处理
+    user["oldPassword"] = md5(user["oldPassword"].encode()).hexdigest()
+
+    # 判断旧密码是否正确
+    if user["oldPassword"] == data.password:
+        data.password = user["newPassword"]
+        db.session.commit()
+
+        return Result(200, "编辑成功")
+    else:
+        return Result(400, "编辑失败：旧密码不正确，请重新输入")
