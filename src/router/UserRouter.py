@@ -167,9 +167,9 @@ def list():
     return Result(200, "获取用户列表成功", data)
 
 
-# 修改管理员账号密码
+# 修改管理员密码
 @user.route("/user/admin", methods=["PATCH"])
-@siwa.doc(tags=["用户管理"], summary="修改管理员账号密码", body=UserAdminPass)
+@siwa.doc(tags=["用户管理"], summary="修改管理员密码", body=UserAdminPass)
 @TokenRequired
 def editAdminPass():
     user = request.json
