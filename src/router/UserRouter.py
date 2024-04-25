@@ -108,9 +108,6 @@ def dropBatch():
 def edit():
     user = request.json
 
-    # 密码加密处理
-    user["password"] = md5(user["password"].encode()).hexdigest()
-
     data = UserModel.query.filter_by(id=user["id"]).update(user)
 
     if not data:
