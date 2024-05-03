@@ -93,7 +93,6 @@ def getSite():
         'footer': p.footer,
         'font': p.font,
         'social': p.social,
-        'covers': p.covers
     }
 
     return Result(200, "获取网站配置成功", data)
@@ -121,7 +120,6 @@ def editSite():
         footer = "{web['footer']}" # 底部描述
         font = "{web['font']}" # 字体链接
         social = {web['social']} # 社交账号
-        covers = {web['covers']} # 随机文章封面
     """
 
     with open("src/model/system/ProjectModel.py", "w", encoding="utf8") as f:

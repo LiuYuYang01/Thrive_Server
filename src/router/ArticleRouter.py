@@ -130,8 +130,6 @@ def get(id):
     next = ArticleModel.query.filter(ArticleModel.createtime > article["createtime"]).order_by(
         ArticleModel.createtime.asc()).first()
 
-    result = {}
-
     if prev is None:
         result = {**article, "prev": prev, "next": next.to()}
     elif next is None:
