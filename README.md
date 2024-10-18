@@ -1,4 +1,12 @@
-**特别强调：** 此项目不允许任何商业行为，如果使用该项目进行二次开发，请附上此开源地址且必须开源，弘扬开源精神，从你我做起！
+**特别强调：** 此项目不允许任何商业行为，如果使用该项目进行二次开发，不允许收取任何费用，弘扬开源精神，从你我做起！
+
+# 最新版已发布
+前端：[LiuYuYang01/ThriveX_Blog (github.com)](https://github.com/LiuYuYang01/ThriveX_Blog)
+
+控制端：[LiuYuYang01/ThriveX_Admin (github.com)](https://github.com/LiuYuYang01/ThriveX_Admin)
+
+后端：[LiuYuYang01/ThriveX_Server (github.com)](https://github.com/LiuYuYang01/ThriveX_Server)
+
 
 # 🎉 Thrive 现代化博客管理系统
 
@@ -17,7 +25,7 @@
 
 
 
-🗂️ **项目预览：** [http://thrive.liuyuyang.net/](http://thrive.liuyuyang.net/)
+🗂️ **项目预览：** [http://liuyuyang.net/](http://liuyuyang.net/)
 
 
 
@@ -46,11 +54,8 @@
 
 
 🔥 **项目演示：**
-
-![image-20240408093322586](https://bu.dusays.com/2024/04/09/66148fc49640a.png)
-
-![image-20240408093347003](https://bu.dusays.com/2024/04/09/66148edf0fad9.png)
-
+![image-20240408093347003](https://bu.dusays.com/2024/04/09/66148fc49640a.png)
+![image-20240408093347003](https://bu.dusays.com/2024/09/17/66e96ca781d49.png)
 
 
 🏹 **未来计划：**
